@@ -4,14 +4,31 @@ const input = require("fs")
 
 const freqChanges = input.split("\n")
     .map(x => parseInt(x)).slice(0, -1);
-const freqs = [0];
 
-while (true) {
-    const newFreq = freqs[freqs.length - 1] +
-        freqChanges[(freqs.length - 1) % freqChanges.length];
-    if (freqs.includes(newFreq)) {
-        console.log(newFreq);
-        break;
+const baseFreqs = freqChanges.reduce((acc, curr) => {
+    const newFreq = acc[acc.length - 1] + curr;
+    acc.push(newFreq);
+    return acc;
+}, [0]);
+
+const baseOffset = baseFreqs.pop();
+
+let minOffset = Infinity;
+let minRepeat = null;
+for (let i = 0; i < baseFreqs.length; i++) {
+    const freqA = baseFreqs[i];
+    for (let j = i + 1; j < baseFreqs.length; j++) {
+        const freqB = baseFreqs[j];
+        if ((freqA % baseOffset + baseOffset) % baseOffset ===
+            (freqB % baseOffset + baseOffset) % baseOffset) {
+            const offset = Math.abs(freqA - freqB);
+            if (offset < minOffset) {
+                console.log(freqA, freqB);
+                minOffset = offset;
+                minRepeat = Math.max(freqA, freqB);
+            }
+        }
     }
-    freqs.push(newFreq);
 }
+
+console.log(minRepeat);
