@@ -14,6 +14,7 @@ const baseFreqs = freqChanges.reduce((acc, curr) => {
 const baseOffset = baseFreqs.pop();
 
 let minOffset = Infinity;
+let minIndex = Infinity;
 let minRepeat = null;
 for (let i = 0; i < baseFreqs.length; i++) {
     const freqA = baseFreqs[i];
@@ -22,10 +23,13 @@ for (let i = 0; i < baseFreqs.length; i++) {
         if ((freqA % baseOffset + baseOffset) % baseOffset ===
             (freqB % baseOffset + baseOffset) % baseOffset) {
             const offset = Math.abs(freqA - freqB);
-            if (offset < minOffset) {
-                console.log(freqA, freqB);
-                minOffset = offset;
-                minRepeat = Math.max(freqA, freqB);
+            if (offset <= minOffset) {
+                const index = baseOffset > 0 ? (freqA > freqB ? j : i) : (freqA > freqB ? i : j)
+                if (offset < minOffset || index < minIndex) {
+                    minOffset = offset;
+                    minIndex = index;
+                    minRepeat = baseOffset > 0 ? Math.max(freqA, freqB) : Math.min(freqA, freqB);
+                }
             }
         }
     }
