@@ -12,7 +12,7 @@ const pls = Array.from(Array(300), (_, y) =>
 let max3x3 = 0;
 let maxXY;
 for (let y = 0; y <= pls.length - 3; y++) {
-    for (let x = 0; x <= pls[y].length - 3; x++) {
+    for (let x = 0; x <= pls.length - 3; x++) {
         let plSum = 0;
         for (let i = 0; i < 3; i++)
             for (let j = 0; j < 3; j++)

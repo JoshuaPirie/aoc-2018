@@ -9,35 +9,24 @@ const pls = Array.from(Array(300), (_, y) =>
     Array.from(Array(300), (_, x) =>
         powerLevel(x, y, serial)));
 
-const integralPls = Array.from(Array(300), () => Array(300));
+const integralPls = Array.from(Array(pls.length + 1), () => Array(pls.length + 1));
 
-for (let y = 0; y < pls.length; y++) {
-    for (let x = 0; x < pls[y].length; x++) {
-        integralPls[y][x] = y === 0 && x === 0 ?
-            pls[y][x] :
-            y === 0 ?
-                integralPls[y][x - 1] + pls[y][x] :
-                x === 0 ?
-                    integralPls[y - 1][x] + pls[y][x] :
-                    integralPls[y - 1][x] + integralPls[y][x - 1] - integralPls[y - 1][x - 1] + pls[y][x];
-    }
-}
+for (let i = 0; i < integralPls.length; i++)
+    integralPls[i][0] = integralPls[0][i] = 0;
+
+for (let y = 1; y < integralPls.length; y++)
+    for (let x = 1; x < integralPls.length; x++)
+        integralPls[y][x] = integralPls[y - 1][x] + integralPls[y][x - 1] - integralPls[y - 1][x - 1] + pls[y - 1][x - 1];
 
 let maxSum = 0;
 let maxResults;
-for (let size = 1; size <= 300; size++) {
-    for (let x = 0; x <= 300 - size; x++) {
-        for (let y = 0; y <= 300 - size; y++) {
-            let plSum = y === 0 && x === 0 ?
-                integralPls[y + size - 1][x + size - 1] :
-                y === 0 ?
-                    integralPls[y + size - 1][x + size - 1] - integralPls[y + size - 1][x - 1] :
-                    x === 0 ?
-                        integralPls[y + size - 1][x + size - 1] - integralPls[y - 1][x + size - 1] :
-                        integralPls[y + size - 1][x + size - 1] - integralPls[y + size - 1][x - 1] - integralPls[y - 1][x + size - 1] + integralPls[y - 1][x - 1];
+for (let size = 1; size <= integralPls.length; size++) {
+    for (let y = 1; y <= integralPls.length - size; y++) {
+        for (let x = 1; x <= integralPls.length - size; x++) {
+            let plSum = integralPls[y + size - 1][x + size - 1] - integralPls[y + size - 1][x - 1] - integralPls[y - 1][x + size - 1] + integralPls[y - 1][x - 1];
             if (plSum > maxSum) {
                 maxSum = plSum;
-                maxResults = [x, y, size];
+                maxResults = [x - 1, y - 1, size];
             }
         }
     }
